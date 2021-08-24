@@ -1,6 +1,9 @@
 <template>
   <div class="container" id="chat-container">
-    <h3>Ciao Bene, {{ authUser.email }}</h3>
+
+
+    <h3>Welcome, {{ authUser.email }}</h3>
+
 
     <div
       class="container"
