@@ -1,21 +1,24 @@
 <template>
   <div id="nav">
-    <nav class="navbar navbar-dark bg-dark navbar-fixed-top">
-      <div class="container-fluid">
+    <head>
+      
+    <nav class="navbar navbar-dark bg-dark navbar-fixed-hrefp">
+      <div class="container">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">C I A O B E N E</a>
         </div>
         <div id="navbar">
           <ul class="nav navbar-nav navbar-right">
             <li>
-                <router-link to="/about">About</router-link>
-                  <router-link to="/signup"> Signup</router-link>
-              <router-link to="/login"> Login</router-link>
+                <a href="/about">About</a>
+                  <a href="/sign-up"> Signup</a>
+              <a href="/login"> Login</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
+    </head>
   </div>
   <router-view />
 </template>
@@ -26,7 +29,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   background-color: rgb(236, 236, 236);
 }
 
@@ -59,7 +61,7 @@ nav{
 
 
 
-#nav a.router-link-exact-active {
+#nav a.a-exact-active {
   color: #FE4C6F;
 }
 
