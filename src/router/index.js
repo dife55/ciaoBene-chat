@@ -9,9 +9,6 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Chat,
-    meta:{
-      requiresAuth:true
-    }
   },
   {
     path: '/sign-up',
@@ -20,7 +17,7 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     component: Login
   },
   {
