@@ -1,8 +1,11 @@
 <template>
-  <div class="container" id="chat-container">
-
-
-    <h3>Welcome, {{ authUser.email }}</h3>
+<head>
+  
+</head>
+  <div class="container mt-5" id="chat-container">
+    <h3>Ciao bene, {{ authUser.email }}</h3>
+    <button class="btn btn-danger mt-3 mb-5" @click="deleteUser">Delete User</button>
+    <button class="btn btn-dark mt-3 mb-5" @click="logOut">Log Out</button>
 
 
     <div
@@ -13,17 +16,18 @@
     >
       <div
         :class="[
-          message.author === authUser.email
+          message.author == authUser.email
             ? 'sent-msg shadow-sm border'
             : 'received-msg shadow-sm border',
         ]"
       >
         <div class="p-4 text-left" id="bubble">
-          <div class="time_date text-left">{{ message.author }} </div>
+          <div class="" id="username-div">{{ message.author }}</div>
           <p class="text-start" id="message-text">{{ message.message }}</p>
         </div>
       </div>
     </div>
+
     <input
       @keyup.enter="saveMessage"
       v-model="message"
@@ -57,11 +61,39 @@ export default {
       box.scrollTop = box.scrollHeight;
     },
 
+    deleteUser() {
+      const user = firebase.auth().currentUser;
+
+      user
+        .delete()
+        .then(() => {
+          // User deleted.
+        })
+        .catch((error) => {
+          // An error ocurred
+          // ...
+        });
+    },
+
+    logOut() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          // Sign-out successful.
+        })
+        .catch((error) => {
+          // An error happened.
+        });
+    },
+
     saveMessage() {
+      let username = this.authUser.email.split('@')[0];
       db.collection("chat")
         .add({
           message: this.message,
           author: this.authUser.email,
+          username: username,
           postedAt: new Date(),
         })
         .then(() => {
@@ -69,6 +101,8 @@ export default {
         });
 
       this.message = null;
+
+      return username;
     },
 
     fetchMessages() {
@@ -93,11 +127,14 @@ export default {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.authUser = user;
+        let name = user.email.split('@')[0];
       } else {
         this.authUser = {};
       }
     });
     this.fetchMessages();
+
+    return name
   },
 
   beforeRouteEnter(to, from, next) {
@@ -105,6 +142,7 @@ export default {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           next();
+
         } else {
           vm.$router.push("/login");
         }
@@ -120,22 +158,22 @@ export default {
   float: left;
   margin: 10px;
   border-radius: 2rem;
-  max-width: 70%;
-  min-width: 40%;
+  max-width: 80%;
+  min-width: 80%;
 }
 
 .sent-msg {
-  background: #b2ffc9;
-  color: #222222;
+  background: #FE4C6F;
+  color: #ffffff;
   float: right;
   margin: 10px;
   border-radius: 2rem;
-  max-width: 70%;
-  min-width: 40%;
+  max-width: 80%;
+  min-width: 80%;
 }
 
-.time_date {
-  color: #333333;
+#username-div {
+  color: #ffffff;
   font-size: 12px;
   font-weight: bold;
   clear: left;
@@ -143,7 +181,7 @@ export default {
   margin-bottom: 10px;
 }
 
-#message-text{
+#message-text {
   font-size: 0.8rem;
 }
 
@@ -161,18 +199,18 @@ export default {
   display: inline-block;
 }
 
-/* style determined base on device */
-@media (max-width: 550px){
-    .sent-msg {
-        width: 100%;
-    }
+/* style determined based on device */
+@media (max-width: 550px) {
+  .sent-msg {
+    width: 100%;
+  }
 
-    .received-msg{
-        width: 100%;
-    }
+  .received-msg {
+    width: 100%;
+  }
 
-    #chat-container{
-      width: 100%;
-    }
+  #chat-container {
+    width: 100%;
+  }
 }
 </style>
