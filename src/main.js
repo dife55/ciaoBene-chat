@@ -12,11 +12,10 @@ import store from './store'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 
+
 import firebase from 'firebase'
 
 library.add(fas, fab);
-
-
 
 
 // Required for side-effects
