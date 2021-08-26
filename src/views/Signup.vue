@@ -7,44 +7,47 @@
 		<h4 class="mb-5" id="headline">OR</h4>
 		<h4 class="mb-5" id="headline">Register with your email adress</h4>
 
-		<form>
 			<div class="form-group">
 				<label class="label">What's your email?</label>
+        
 				<input
 					type="email"
 					v-model="formData.email"
 					class="form-control rounded-pill shadow-sm border p-3"
-					id="input-form"
+					id="input-email"
 					aria-describedby="emailHelp"
 					placeholder="Enter email"
 				/>
+        
 			</div>
 
 			<div class="form-group mt-4">
 				<label id="label">Password</label>
+        
 				<input
 					type="password"
 					minlength="6"
 					v-model="formData.password"
 					class="form-control rounded-pill shadow-sm border p-3"
-					id="input-form"
+					id="input-password"
 					aria-describedby="password-hint"
 					placeholder="Password"
+          @keyup.enter="signUp"
 				/>
 				<div class="password-hint-error mt-2" style="font-size: 0.8rem" id="password-hint">
 					Password must contain at least 6 characters
 				</div>
+      
 			</div>
-
-		<div class="d-grid gap-2 text-center">
-			<button class="btn mt-5 mb-5 p-3 rounded-pill" id="register-button" @click="signUp"><fa :icon="['fas', 'edit']" /> Register</button>
-		</div>
-		</form>
+			<div class="d-grid gap-2 text-center">
+				<button type="submit" class="btn mt-5 mb-5 p-3 rounded-pill" id="register-button" @click="signUp"><fa :icon="['fas', 'edit']" /> Register</button>
+			</div>
 	</div>
 </template>
 
 <script>
 	import firebase from 'firebase';
+  import swal from 'sweetalert';
 
 	export default {
 		name: 'Signup',
@@ -64,11 +67,9 @@
 					.auth()
 					.createUserWithEmailAndPassword(this.formData.email, this.formData.password)
 					.then((user) => {
-						this.$router.push('Login');
-						// Signed in
-						// var user = userCredential.user;
-						// ...
-						username = this.formData.username;
+						//swal("User registered!", "Congratulations, your user has been registered!", "success")
+
+						this.$router.replace('/success');
 					})
 					.catch((error) => {
 						var errorCode = error.code;
@@ -98,12 +99,7 @@
 					})
 					.catch((error) => {
 						// Handle Errors here.
-						var errorCode = error.code;
-						var errorMessage = error.message;
-						// The email of the user's account used.
-						var email = error.email;
-						// The firebase.auth.AuthCredential type that was used.
-						var credential = error.credential;
+						console.log("Something went wrong!")
 						// ...
 					});
 			},
@@ -113,7 +109,7 @@
 
 <style scoped>
 	#container-signup {
-		width: 70vh;
+		width: 50vh;
 	}
 
 	button {
@@ -138,7 +134,7 @@
 		box-shadow: none;
 	}
 
-	#input-form {
+	#input-email, #input-password {
 		font-size: 0.9rem;
 	}
 

@@ -118,7 +118,7 @@
 					});
 
 				this.message = null;
-				return username;
+		
 			},
 
 			fetchMessages() {

@@ -1,16 +1,18 @@
 <template>
 	<div class="container mt-5" id="container-login">
 		<h3 class="mb-5" id="headline">Log in to CiaoBene to continue.</h3>
-
-		<button class="btn mb-3 p-3 rounded-pill" id="register-button" @click="login"><fa :icon="['fab', 'google']" /> Continue with Google</button>
-
-		<h4 class="mb-5" id="headline">OR</h4>
-
 		<hr />
 		<form>
 			<div class="form-group">
 				<label>Email address</label>
-				<input type="email" v-model="formData.email" class="form-control rounded-pill shadow-sm border p-3" id="input-form" aria-describedby="emailHelp" placeholder="Enter email" />
+				<input
+					type="email"
+					v-model="formData.email"
+					class="form-control rounded-pill shadow-sm border p-3"
+					id="input-email"
+					aria-describedby="emailHelp"
+					placeholder="Enter email"
+				/>
 			</div>
 
 			<div class="form-group mt-4">
@@ -20,20 +22,24 @@
 					minlength="6"
 					v-model="formData.password"
 					class="form-control rounded-pill shadow-sm border p-3"
-					id="input-form"
+					id="input-password"
 					aria-describedby="password-hint"
 					placeholder="Password"
 				/>
 			</div>
-
-			<div class="password-hint-error mt-2" style="font-size: 0.8rem" id="password-hint">
-				Password must contain at least 6 characters
-			</div>
-
-			<div class="d-grid gap-2 text-center"></div>
 		</form>
-		<button class="btn mt-3 p-3 rounded-pill" id="register-button" @click="signIn" @enter="signIn"><fa :icon="['fas', 'user-circle']" /> Login</button>
+
+		<div class="password-hint-error mt-2" style="font-size: 0.8rem" id="password-hint">
+			Password must contain at least 6 characters
+		</div>
+
+		<div class="d-grid gap-2 text-center"></div>
+		<button class="btn mt-3 mb-3 p-3 rounded-pill" id="register-button" @click="signIn" @enter="signIn"><fa :icon="['fas', 'user-circle']" /> Login</button>
 		<hr />
+
+		<h4 class="mb-5" id="headline">OR</h4>
+		<button class="btn mb-3 p-3 rounded-pill" id="register-button" @click="login"><fa :icon="['fab', 'google']" /> Continue with Google</button>
+
 		<h6 class="mb-1 mt-5" id="headline">Don't have an account?</h6>
 		<button class="btn mt-2 mb-5 p-3 rounded-pill" id="reg-now-button" @click="signUp">
 			Sign up for CiaoBene!
@@ -61,8 +67,8 @@
 					.signInWithEmailAndPassword(this.formData.email, this.formData.password)
 					.then((user) => {
 						this.$router.replace('/');
-            let loggedUser = this.formData.email.split('@')[0];
-            console.log(loggedUser +" successfully logged in!")
+						let loggedUser = this.formData.email.split('@')[0];
+						console.log(loggedUser + ' successfully logged in!');
 					})
 					.catch((e) => {
 						console.log(e.message);
@@ -106,7 +112,7 @@
 
 <style scoped>
 	#container-login {
-		width: 70vh;
+		width: 50vh;
 	}
 
 	button {
@@ -131,7 +137,8 @@
 		box-shadow: none;
 	}
 
-	#input-form {
+	#input-email,
+	#input-password {
 		font-size: 0.9rem;
 	}
 
