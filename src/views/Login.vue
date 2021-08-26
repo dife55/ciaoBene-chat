@@ -1,203 +1,171 @@
 <template>
-  <div class="container mt-5" id="container-login">
-        <h3 class="mb-5" id="headline">Log in to CiaoBene to continue.</h3>
+	<div class="container mt-5" id="container-login">
+		<h3 class="mb-5" id="headline">Log in to CiaoBene to continue.</h3>
 
-            <button
-      class="btn mb-3 p-3 rounded-pill"
-      id="register-button"
-      @click="login"
-    >
-      <fa :icon="['fab', 'google']" /> Continue with Google
-    </button>
+		<button class="btn mb-3 p-3 rounded-pill" id="register-button" @click="login"><fa :icon="['fab', 'google']" /> Continue with Google</button>
 
-        <h4 class="mb-5" id="headline">OR</h4>
+		<h4 class="mb-5" id="headline">OR</h4>
 
-        <hr/>
-        <form>
-    <div class="form-group">
-      <label>Email address</label>
-      <input
-        type="email"
-        v-model="formData.email"
-        class="form-control rounded-pill shadow-sm border p-3"
-        id="input-form"
-        placeholder="Enter email"
-      />
-    </div>
+		<hr />
+		<form>
+			<div class="form-group">
+				<label>Email address</label>
+				<input type="email" v-model="formData.email" class="form-control rounded-pill shadow-sm border p-3" id="input-form" aria-describedby="emailHelp" placeholder="Enter email" />
+			</div>
 
-    <div class="form-group mt-4">
-      <label>Password</label>
-      <input
-        type="password"
-        minlength="6"
-        v-model="formData.password"
-        class="form-control rounded-pill shadow-sm border p-3"
-        id="input-form"
-        aria-describedby="password-hint"
-        placeholder="Password"
-      />
-      </div>
+			<div class="form-group mt-4">
+				<label>Password</label>
+				<input
+					type="password"
+					minlength="6"
+					v-model="formData.password"
+					class="form-control rounded-pill shadow-sm border p-3"
+					id="input-form"
+					aria-describedby="password-hint"
+					placeholder="Password"
+				/>
+			</div>
 
-      <div
-        class="password-hint-error mt-2"
-        style="font-size: 0.8rem"
-        id="password-hint"
-      >
-        Password must contain at least 6 characters
-      </div>
+			<div class="password-hint-error mt-2" style="font-size: 0.8rem" id="password-hint">
+				Password must contain at least 6 characters
+			</div>
 
-    <div class="d-grid gap-2 text-center">
-
-    </div>
-  </form>
-        <button
-        class="btn mt-3 p-3 rounded-pill"
-        id="register-button"
-        @click="signIn" @enter="signIn"
-      >
-       <fa :icon="['fas', 'user-circle']" /> Login 
-      </button>
-      <hr/>
-              <h6 class="mb-1 mt-5" id="headline">Don't have an account?</h6>
-                    <button
-        class="btn mt-2 mb-5 p-3 rounded-pill"
-        id="reg-now-button"
-        @click="signUp"
-      >
-        Sign up for CiaoBene!
-      </button>
-  </div>
-
-
+			<div class="d-grid gap-2 text-center"></div>
+		</form>
+		<button class="btn mt-3 p-3 rounded-pill" id="register-button" @click="signIn" @enter="signIn"><fa :icon="['fas', 'user-circle']" /> Login</button>
+		<hr />
+		<h6 class="mb-1 mt-5" id="headline">Don't have an account?</h6>
+		<button class="btn mt-2 mb-5 p-3 rounded-pill" id="reg-now-button" @click="signUp">
+			Sign up for CiaoBene!
+		</button>
+	</div>
 </template>
 
 <script>
-import firebase from "firebase";
-export default {
-  name: "SignIn",
-  name: "Signup",
-  data() {
-    return {
-      formData: {
-        email: "",
-        password: "",
-      },
-    };
-  },
-  methods: {
-    signIn() {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.formData.email, this.formData.password)
-        .then((user) => {
-          this.$router.replace("/");
-        })
-        .catch((e) => {
-          alert(e.message);
-        });
-    },
+	import firebase from 'firebase';
+	export default {
+		name: 'SignIn',
+		name: 'Signup',
+		data() {
+			return {
+				formData: {
+					email: '',
+					password: '',
+				},
+			};
+		},
+		methods: {
+			signIn() {
+				firebase
+					.auth()
+					.signInWithEmailAndPassword(this.formData.email, this.formData.password)
+					.then((user) => {
+						this.$router.replace('/');
+            let loggedUser = this.formData.email.split('@')[0];
+            console.log(loggedUser +" successfully logged in!")
+					})
+					.catch((e) => {
+						console.log(e.message);
+					});
+			},
 
-    login() {
-      var provider = new firebase.auth.GoogleAuthProvider();
-      provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+			login() {
+				var provider = new firebase.auth.GoogleAuthProvider();
+				provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then((result) => {
-          /** @type {firebase.auth.OAuthCredential} */
-          var credential = result.credential;
+				firebase
+					.auth()
+					.signInWithPopup(provider)
+					.then((result) => {
+						/** @type {firebase.auth.OAuthCredential} */
+						var credential = result.credential;
 
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          var token = credential.accessToken;
-          // The signed-in user info.
-          var user = result.user;
+						// This gives you a Google Access Token. You can use it to access the Google API.
+						var token = credential.accessToken;
+						// The signed-in user info.
+						var user = result.user;
 
-          this.$router.push('/')
-          // ...
-        })
-        .catch((error) => {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          // The email of the user's account used.
-          var email = error.email;
-          // The firebase.auth.AuthCredential type that was used.
-          var credential = error.credential;
-          // ...
-        });
-    },
-  },
-  created() {},
-};
+						this.$router.push('/');
+						// ...
+					})
+					.catch((error) => {
+						// Handle Errors here.
+						var errorCode = error.code;
+						var errorMessage = error.message;
+						// The email of the user's account used.
+						var email = error.email;
+						// The firebase.auth.AuthCredential type that was used.
+						var credential = error.credential;
+						// ...
+					});
+			},
+		},
+		created() {},
+	};
 </script>
 
 <style scoped>
-#container-login {
-  width: 70vh;
-}
+	#container-login {
+		width: 70vh;
+	}
 
-button {
-  background: #000000;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease 0s;
-  font-weight: bold;
-  font-size: 0.9rem;
-  color: white;
-  border: 0px;
-}
+	button {
+		background: #000000;
+		box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+		transition: all 0.3s ease 0s;
+		font-weight: bold;
+		font-size: 0.9rem;
+		color: white;
+		border: 0px;
+	}
 
-#google-button {
-  background: none;
-  border: none;
-  color: black;
-  box-shadow: none;
-}
+	#google-button {
+		background: none;
+		border: none;
+		color: black;
+		box-shadow: none;
+	}
 
-#google-button:hover {
-  color: #fe4c6f;
-  box-shadow: none;
-}
+	#google-button:hover {
+		color: #fe4c6f;
+		box-shadow: none;
+	}
 
-#input-form {
-  font-size: 0.9rem;
-}
+	#input-form {
+		font-size: 0.9rem;
+	}
 
-#reg-now-button{
-  background: #fe4c6f;
+	#reg-now-button {
+		background: #fe4c6f;
+	}
 
-}
+	#reg-now-button:hover {
+		border: none;
+		background-color: #030303;
+		box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+		color: #fff;
+	}
 
-#reg-now-button:hover{
-  border: none;
-  background-color: #030303;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-  color: #fff;
+	button:hover {
+		border: none;
+		background-color: #fe4c6f;
+		box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+		color: #fff;
+	}
 
-}
+	label {
+		font-weight: bold;
+		margin-bottom: 10px;
+	}
 
-button:hover {
-  border: none;
-  background-color: #fe4c6f;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-  color: #fff;
-}
+	#headline {
+		font-weight: bold;
+	}
 
-label{
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-#headline {
-  font-weight: bold;
-}
-
-/* style determined based on device */
-@media (max-width: 550px) {
-  #container-login {
-    width: 95%;
-  }
-}
-
-
+	/* style determined based on device */
+	@media (max-width: 550px) {
+		#container-login {
+			width: 95%;
+		}
+	}
 </style>
