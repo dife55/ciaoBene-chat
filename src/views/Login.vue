@@ -1,33 +1,73 @@
 <template>
-  <div class="container">
+  <div class="container mt-5" id="container-login">
+        <h3 class="mb-5" id="headline">Log in to CiaoBene to continue.</h3>
 
-  <div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-        <input
-          type="email"
-          v-model="formData.email"
-          class="form-control"
-          placeholder="email"
-        />
+            <button
+      class="btn mb-3 p-3 rounded-pill"
+      id="register-button"
+      @click="login"
+    >
+      <fa :icon="['fab', 'google']" /> Continue with Google
+    </button>
+
+        <h4 class="mb-5" id="headline">OR</h4>
+
+        <hr/>
+        <form>
+    <div class="form-group">
+      <label>Email address</label>
+      <input
+        type="email"
+        v-model="formData.email"
+        class="form-control rounded-pill shadow-sm border p-3"
+        id="input-form"
+        placeholder="Enter email"
+      />
+    </div>
+
+    <div class="form-group mt-4">
+      <label>Password</label>
+      <input
+        type="password"
+        minlength="6"
+        v-model="formData.password"
+        class="form-control rounded-pill shadow-sm border p-3"
+        id="input-form"
+        aria-describedby="password-hint"
+        placeholder="Password"
+      />
+      </div>
+
+      <div
+        class="password-hint-error mt-2"
+        style="font-size: 0.8rem"
+        id="password-hint"
+      >
+        Password must contain at least 6 characters
+      </div>
+
+    <div class="d-grid gap-2 text-center">
+
+    </div>
+  </form>
+        <button
+        class="btn mt-3 p-3 rounded-pill"
+        id="register-button"
+        @click="signIn" @enter="signIn"
+      >
+       <fa :icon="['fas', 'user-circle']" /> Login 
+      </button>
+      <hr/>
+              <h6 class="mb-1 mt-5" id="headline">Don't have an account?</h6>
+                    <button
+        class="btn mt-2 mb-5 p-3 rounded-pill"
+        id="reg-now-button"
+        @click="signUp"
+      >
+        Sign up for CiaoBene!
+      </button>
   </div>
 
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-        <input
-          type="password"
-          v-model="formData.password"
-          class="form-control"
-          placeholder="password"
-        />
-
-    <div class="password-hint-error" id="password-hint">Password must contain at least 6 characters</div>
-  </div>
-  <div class="d-grid gap-2">
-
-        <button class="btn btn-success" @click="signIn">Signin</button>
-          <button class="btn btn-success" @click="login">Login with Google</button>
-  </div>
-  </div>
 
 </template>
 
@@ -35,6 +75,7 @@
 import firebase from "firebase";
 export default {
   name: "SignIn",
+  name: "Signup",
   data() {
     return {
       formData: {
@@ -91,5 +132,72 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+#container-login {
+  width: 70vh;
+}
+
+button {
+  background: #000000;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: white;
+  border: 0px;
+}
+
+#google-button {
+  background: none;
+  border: none;
+  color: black;
+  box-shadow: none;
+}
+
+#google-button:hover {
+  color: #fe4c6f;
+  box-shadow: none;
+}
+
+#input-form {
+  font-size: 0.9rem;
+}
+
+#reg-now-button{
+  background: #fe4c6f;
+
+}
+
+#reg-now-button:hover{
+  border: none;
+  background-color: #030303;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  color: #fff;
+
+}
+
+button:hover {
+  border: none;
+  background-color: #fe4c6f;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  color: #fff;
+}
+
+label{
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#headline {
+  font-weight: bold;
+}
+
+/* style determined based on device */
+@media (max-width: 550px) {
+  #container-login {
+    width: 95%;
+  }
+}
+
+
 </style>
