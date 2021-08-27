@@ -2,48 +2,54 @@
 	<div class="container mt-5" id="container-login">
 		<h3 class="mb-5" id="headline">Log in to CiaoBene to continue.</h3>
 		<hr />
-		<form>
-			<div class="form-group">
-				<label>Email address</label>
-				<input
-					type="email"
-					v-model="formData.email"
-					class="form-control rounded-pill shadow-sm border p-3"
-					id="input-email"
-					aria-describedby="emailHelp"
-					placeholder="Enter email"
-				/>
-			</div>
 
-			<div class="form-group mt-4">
-				<label>Password</label>
-				<input
-					type="password"
-					minlength="6"
-					v-model="formData.password"
-					class="form-control rounded-pill shadow-sm border p-3"
-					id="input-password"
-					aria-describedby="password-hint"
-					placeholder="Password"
-				/>
-			</div>
-		</form>
+		<div class="form-group">
+      			<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="password-hint"></div>
+			<label>Email address</label>
+			<input
+				type="email"
+				v-model="formData.email"
+				class="form-control rounded-pill shadow-sm border p-3"
+				id="input-email"
+				aria-describedby="emailHelp"
+				placeholder="Enter email"
+				required
+			/>
+		</div>
+
+		<div class="form-group mt-4">
+			<label>Password</label>
+			<input
+				type="password"
+				minlength="6"
+				v-model="formData.password"
+				class="form-control rounded-pill shadow-sm border p-3"
+				id="input-password"
+				aria-describedby="password-hint"
+				placeholder="Password"
+				required
+			/>
+		</div>
 
 		<div class="password-hint-error mt-2" style="font-size: 0.8rem" id="password-hint">
 			Password must contain at least 6 characters
 		</div>
 
 		<div class="d-grid gap-2 text-center"></div>
-		<button class="btn mt-3 mb-3 p-3 rounded-pill" id="register-button" @click="signIn" @enter="signIn"><fa :icon="['fas', 'user-circle']" /> Login</button>
+		<button type="submit" class="btn mt-3 mb-3 p-3 rounded-pill" id="register-button" @click="signIn" @enter="signIn">
+			<fa :icon="['fas', 'user-circle']" /> Login
+		</button>
 		<hr />
 
 		<h4 class="mb-5" id="headline">OR</h4>
 		<button class="btn mb-3 p-3 rounded-pill" id="register-button" @click="login"><fa :icon="['fab', 'google']" /> Continue with Google</button>
 
 		<h6 class="mb-1 mt-5" id="headline">Don't have an account?</h6>
-		<button class="btn mt-2 mb-5 p-3 rounded-pill" id="reg-now-button" @click="signUp">
-			Sign up for CiaoBene!
-		</button>
+		<a href="/sign-up"
+			><button class="btn mt-2 mb-5 p-3 rounded-pill" id="reg-now-button">
+				Sign up for CiaoBene!
+			</button></a
+		>
 	</div>
 </template>
 
@@ -70,8 +76,21 @@
 						let loggedUser = this.formData.email.split('@')[0];
 						console.log(loggedUser + ' successfully logged in!');
 					})
-					.catch((e) => {
-						console.log(e.message);
+					.catch((error) => {
+						//let emailValid = document.querySelector('#input-email')
+						//let passwordValid = document.querySelector('#input-password')
+
+						//emailValid.reportValidity();
+						//passwordValid.reportValidity();
+
+						var pwDiv = document.getElementById('password-hint');
+
+						if (error.message) {
+							pwDiv.style.display = 'block';
+							pwDiv.innerText = error.message;
+						} else {
+							pwDiv.style.display = 'none';
+						}
 					});
 			},
 
@@ -143,14 +162,17 @@
 	}
 
 	#reg-now-button {
-		background: #fe4c6f;
+		background: none;
+		color: black;
+		box-shadow: none;
+		text-decoration: underline;
 	}
 
 	#reg-now-button:hover {
 		border: none;
-		background-color: #030303;
-		box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-		color: #fff;
+		color: #fe4c6f;
+		box-shadow: none;
+		text-decoration: none;
 	}
 
 	button:hover {

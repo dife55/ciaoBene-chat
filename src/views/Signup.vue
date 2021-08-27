@@ -7,47 +7,46 @@
 		<h4 class="mb-5" id="headline">OR</h4>
 		<h4 class="mb-5" id="headline">Register with your email adress</h4>
 
-			<div class="form-group">
-				<label class="label">What's your email?</label>
-        
-				<input
-					type="email"
-					v-model="formData.email"
-					class="form-control rounded-pill shadow-sm border p-3"
-					id="input-email"
-					aria-describedby="emailHelp"
-					placeholder="Enter email"
-				/>
-        
-			</div>
+		<div class="form-group">
+			<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="password-hint"></div>
+			<label class="label">What's your email?</label>
 
-			<div class="form-group mt-4">
-				<label id="label">Password</label>
-        
-				<input
-					type="password"
-					minlength="6"
-					v-model="formData.password"
-					class="form-control rounded-pill shadow-sm border p-3"
-					id="input-password"
-					aria-describedby="password-hint"
-					placeholder="Password"
-          @keyup.enter="signUp"
-				/>
-				<div class="password-hint-error mt-2" style="font-size: 0.8rem" id="password-hint">
-					Password must contain at least 6 characters
-				</div>
-      
-			</div>
-			<div class="d-grid gap-2 text-center">
-				<button type="submit" class="btn mt-5 mb-5 p-3 rounded-pill" id="register-button" @click="signUp"><fa :icon="['fas', 'edit']" /> Register</button>
-			</div>
+			<input
+				type="email"
+				v-model="formData.email"
+				class="form-control rounded-pill shadow-sm border p-3"
+				id="input-email"
+				aria-describedby="emailHelp"
+				placeholder="Enter email"
+				required
+			/>
+				
+		</div>
+
+		<div class="form-group mt-4">
+			<label id="label">Password</label>
+
+			<input
+				type="password"
+				minlength="6"
+				v-model="formData.password"
+				class="form-control rounded-pill shadow-sm border p-3"
+				id="input-password"
+				aria-describedby="password-hint"
+				placeholder="Password"
+				@keyup.enter="signUp"
+				required
+			/>
+		</div>
+		<div class="d-grid gap-2 text-center">
+			<button type="submit" class="btn mt-5 mb-5 p-3 rounded-pill" id="register-button" @click="signUp"><fa :icon="['fas', 'edit']" /> Register</button>
+		</div>
 	</div>
 </template>
 
 <script>
 	import firebase from 'firebase';
-  import swal from 'sweetalert';
+	import swal from 'sweetalert';
 
 	export default {
 		name: 'Signup',
@@ -72,8 +71,20 @@
 						this.$router.replace('/success');
 					})
 					.catch((error) => {
-						var errorCode = error.code;
-						var errorMessage = error.message;
+						//let emailValid = document.querySelector('#input-email');
+						//let passwordValid = document.querySelector('#input-password');
+
+						//emailValid.reportValidity();
+						//passwordValid.reportValidity();
+
+						var pwDiv = document.getElementById('password-hint');
+
+						if (error.message) {
+							pwDiv.style.display = 'block';
+							pwDiv.innerText = error.message;
+						} else {
+							pwDiv.style.display = 'none';
+						}
 						// ..
 					});
 			},
@@ -99,7 +110,7 @@
 					})
 					.catch((error) => {
 						// Handle Errors here.
-						console.log("Something went wrong!")
+						console.log('Something went wrong!');
 						// ...
 					});
 			},
@@ -134,7 +145,8 @@
 		box-shadow: none;
 	}
 
-	#input-email, #input-password {
+	#input-email,
+	#input-password {
 		font-size: 0.9rem;
 	}
 
@@ -153,6 +165,7 @@
 		font-weight: bold;
 		margin-bottom: 10px;
 	}
+
 
 	/* style determined based on device */
 	@media (max-width: 550px) {
