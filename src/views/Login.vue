@@ -1,6 +1,6 @@
 <template>
 	<div class="container mt-5" id="container-login">
-		<h3 class="mb-5" id="headline">Log in to CiaoBene to continue.</h3>
+		<h3 class="mb-5" id="headline">Log in to continue.</h3>
 		<hr />
 
 		<div class="form-group">
@@ -55,11 +55,13 @@
 
 <script>
 	import firebase from 'firebase';
+
 	export default {
 		name: 'SignIn',
 		name: 'Signup',
+
 		data() {
-			return {
+			return { 
 				formData: {
 					email: '',
 					password: '',
@@ -73,6 +75,7 @@
 					.signInWithEmailAndPassword(this.formData.email, this.formData.password)
 					.then((user) => {
 						this.$router.replace('/');
+
 						let loggedUser = this.formData.email.split('@')[0];
 						console.log(loggedUser + ' successfully logged in!');
 					})

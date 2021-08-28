@@ -20,7 +20,6 @@
 				placeholder="Enter email"
 				required
 			/>
-				
 		</div>
 
 		<div class="form-group mt-4">
@@ -87,6 +86,7 @@
 						}
 						// ..
 					});
+
 			},
 
 			login() {
@@ -165,7 +165,6 @@
 		font-weight: bold;
 		margin-bottom: 10px;
 	}
-
 
 	/* style determined based on device */
 	@media (max-width: 550px) {

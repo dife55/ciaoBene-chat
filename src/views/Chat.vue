@@ -1,8 +1,10 @@
 <template>
-	<div class="container mt-5">
+	<div class="container mt-5" id="chat-container">
 		<div class="row">
 			<div class="col-3 p-2 m-3" id="user-panel">
-				<h3 id="user-head">{{ authUser.email }}</h3>
+				<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
+				<h3 id="user-head">{{ authUser.displayName }}</h3>
+				<h3 style="font-size:1rem;" id="user-head">{{ authUser.email }}</h3>
 				<button class="btn btn-danger mt-3 m-2 p-3 rounded-pill shadow-sm border" id="delete-button" @click="deleteUser">
 					<fa :icon="['fas', 'times-circle']" /> Delete User
 				</button>
@@ -19,11 +21,11 @@
 					<tbody>
 						<tr>
 							<th scope="row">1</th>
-							<td>Football</td>
+							<td>Lobby</td>
 						</tr>
 						<tr>
 							<th scope="row">2</th>
-							<td>Basketball</td>
+							<td>Football</td>
 						</tr>
 						<tr>
 							<th scope="row">3</th>
@@ -38,14 +40,14 @@
 
 				<div class="container" id="message-container" v-for="message in messages" :key="message">
 					<div :class="[message.author == authUser.email ? 'sent-msg shadow-sm border' : 'received-msg shadow-sm border']">
-						<span class="position-absolute p-3" id="username-div">{{ message.author }}</span>
-						<div class="p-3 mt-4 text-left" id="bubble">
-							<p class="text-start" id="message-text">
+						<span class="" id="date-posted">{{ message.date }}</span>
+						<span class="position-absolute p-3" id="username-div">{{ message.username }}</span>
+						<div class=" mt-4 text-left" id="bubble">
+							<p class="text-start p-3" id="message-text">
 								{{ message.message }}
 							</p>
 						</div>
-						<span class="m-3" id="time-posted">{{ message.time }}</span>
-						<span class="m-3" id="date-posted">{{ message.date }}</span>
+						<span class="" id="time-posted">{{ message.time }}</span>
 					</div>
 				</div>
 				<input
@@ -79,22 +81,44 @@
 
 		methods: {
 			goDown() {
-				let box = document.querySelector('#message-container');
-				box.scrollTop = box.scrollHeight;
+				var box = document.getElementById('write-message');
+				box.scrollIntoView();
 			},
 
 			deleteUser() {
 				const user = firebase.auth().currentUser;
 				let userdeleted = firebase.auth().currentUser.email;
+
 				user
 					.delete()
 					.then(() => {
-
-            swal("User deleted", "User has now been deleted from database", "success")
-						console.log(userdeleted + ' is now deleted from firebase!');
+						swal({
+							title: 'Delete user?',
+							text: 'Are you sure you want to delete? ' + userdeleted + '?',
+							icon: 'warning',
+							buttons: true,
+							dangerMode: true,
+						}).then((willDelete) => {
+							if (willDelete) {
+								swal('Deleted!', userdeleted + 'has been successfully deleted.', 'success', {
+									icon: 'success',
+								});
+							} else {
+								swal('Oops!', 'Something went wrong!', 'error');
+							}
+						});
+						//swal('User deleted', 'User has now been deleted from database', 'success');
 					})
 					.catch((error) => {
+						var deleteDiv = document.getElementById('delete-hint');
 
+						if (error.message) {
+							deleteDiv.style.display = 'block';
+							deleteDiv.innerText = error.message;
+						} else {
+							deleteDiv.style.display = 'none';
+						}
+						console.log(error);
 					});
 			},
 
@@ -103,6 +127,7 @@
 					.auth()
 					.signOut()
 					.then(() => {
+
 						// Sign-out successful.
 					})
 					.catch((error) => {
@@ -114,19 +139,37 @@
 				let dateNow = new Intl.DateTimeFormat('se-SE', { dateStyle: 'full' }).format(new Date());
 				let timeNow = new Intl.DateTimeFormat('se-SE', { timeStyle: 'short' }).format(new Date());
 
-				db.collection('chat')
-					.add({
-						message: this.message,
-						author: this.authUser.email,
-						postedAt: new Date(),
-						date: dateNow,
-						time: timeNow,
-					})
-					.then(() => {
-						this.goDown();
-					});
+				if (this.authUser.displayName) {
+					db.collection('chat')
+						.add({
+							message: this.message,
+							author: this.authUser.email,
+							postedAt: new Date(),
+							date: dateNow,
+							time: timeNow,
+							username: this.authUser.displayName,
+						})
+						.then(() => {
+							this.goDown();
+						});
 
-				this.message = null;
+					this.message = null;
+				} else {
+					db.collection('chat')
+						.add({
+							message: this.message,
+							author: this.authUser.email,
+							postedAt: new Date(),
+							date: dateNow,
+							time: timeNow,
+							username: this.authUser.email.split('@')[0],
+						})
+						.then(() => {
+							this.goDown();
+						});
+
+					this.message = null;
+				}
 			},
 
 			fetchMessages() {
@@ -137,10 +180,6 @@
 						querySnapshot.forEach((doc) => {
 							allMessages.push(doc.data());
 						});
-
-						let newFormat = new Date().toLocaleDateString('de-DE').split('C')[0];
-
-						console.log();
 
 						this.messages = allMessages;
 
@@ -155,10 +194,12 @@
 			firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
 					this.authUser = user;
+
 				} else {
 					this.authUser = {};
 				}
 			});
+
 			this.fetchMessages();
 		},
 
@@ -182,22 +223,26 @@
 		float: left;
 		margin-bottom: 30px;
 		border-radius: 2rem;
-		max-width: 60vh;
-		min-width: 40vh;
+		max-width: 50vh;
+		min-width: 30vh;
 		margin-top: 3vh;
 	}
 
 	#date-posted {
 		font-size: 0.7rem;
-		font-weight: bold;
-		margin-top: 0.2rem;
+		color: rgb(66, 66, 66);
 		box-sizing: border-box;
-		margin-top: 1vh;
+		position: absolute;
+		margin-left: 2vh;
+		margin-bottom: 1vh;
+		margin-top: -20px;
 	}
 
 	#time-posted {
 		font-size: 0.7rem;
 		float: right;
+		margin-right: 2vh;
+		margin-bottom: 1vh;
 		box-sizing: border-box;
 	}
 
@@ -207,8 +252,8 @@
 		float: right;
 		margin-bottom: 30px;
 		border-radius: 2rem;
-		max-width: 60vh;
-		min-width: 40vh;
+		max-width: 50vh;
+		min-width: 30vh;
 		margin-top: 3vh;
 	}
 
@@ -255,6 +300,9 @@
 
 	#message-container {
 		width: 100%;
+	}
+
+	#user-panel {
 	}
 
 	/* style determined based on device */

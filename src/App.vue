@@ -9,9 +9,9 @@
 					<div id="navbar">
 						<ul class="nav navbar-nav navbar-right">
 							<li>
-								<a href="/about">About</a>
-								<a href="/sign-up"> Signup</a>
-								<a href="/login"> Login</a>
+								<a id="about-link" href="/about">About</a>
+								<a id="sign-up-link" href="/sign-up"> Signup</a>
+								<a id="login-link" href="/login"> Login</a>
 							</li>
 						</ul>
 					</div>
@@ -34,6 +34,7 @@
 				},
 			};
 		},
+
 		methods: {
 			signIn() {
 				firebase
@@ -45,6 +46,18 @@
 					})
 					.catch((e) => {
 						console.log(e.message);
+					});
+			},
+
+			logOut() {
+				firebase
+					.auth()
+					.signOut()
+					.then(() => {
+
+					})
+					.catch((error) => {
+						// An error happened.
 					});
 			},
 
@@ -79,7 +92,28 @@
 					});
 			},
 		},
-		created() {},
+		created() {
+			firebase.auth().onAuthStateChanged((user) => {
+				if (user) {
+					this.authUser = user;
+
+				} else {
+					this.authUser = {};
+				}
+			});
+		},
+
+		beforeRouteEnter(to, from, next) {
+			next((vm) => {
+				firebase.auth().onAuthStateChanged((user) => {
+					if (user) {
+						next();
+					} else {
+						vm.$router.push('/login');
+					}
+				});
+			});
+		},
 	};
 </script>
 
@@ -91,10 +125,12 @@
 		text-align: center;
 		background-color: rgb(236, 236, 236);
 		margin-top: 20vh;
+				scroll-behavior: smooth;
 	}
 
 	html {
 		background: rgb(236, 236, 236);
+		scroll-behavior: smooth;
 	}
 
 	nav {
