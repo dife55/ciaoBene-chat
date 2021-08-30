@@ -1,68 +1,44 @@
 <template>
 	<div class="container mt-5" id="chat-container">
 		<div class="row">
-			<div class="col-3 p-2 m-3" id="user-panel">
-				<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
-				<h3 id="user-head">{{ authUser.displayName }}</h3>
-				<h3 style="font-size:1rem;" id="user-head">{{ authUser.email }}</h3>
-				<button class="btn btn-danger mt-3 m-2 p-3 rounded-pill shadow-sm border" id="delete-button" @click="deleteUser">
-					<fa :icon="['fas', 'times-circle']" /> Delete User
-				</button>
-				<button class="btn btn-dark mt-2 mb-5 m-2 p-3 rounded-pill shadow-sm border" id="log-out-button" @click="logOut">
-					Log Out
-				</button>
-				<table class="table">
-					<thead>
-						<tr>
-							<th scope="col"></th>
-							<th scope="col">Channels</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<th scope="row">1</th>
-							<td>Lobby</td>
-						</tr>
-						<tr>
-							<th scope="row">2</th>
-							<td>Football</td>
-						</tr>
-						<tr>
-							<th scope="row">3</th>
-							<td colspan="2">Movies</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-
-			<div class="col-6 m-4" id="chat-container">
-				<h3 id="user-head">YOU ARE IN THE LOBBY</h3>
-
-				<div class="container" id="message-container" v-for="message in messages" :key="message">
-					<div :class="[message.author == authUser.email ? 'sent-msg shadow-sm border' : 'received-msg shadow-sm border']">
-						<span class="" id="date-posted">{{ message.date }}</span>
-						<span class="position-absolute p-3" id="username-div">{{ message.username }}</span>
-						<div class=" mt-4 text-left" id="bubble">
-							<p class="text-start p-3" id="message-text">
-								{{ message.message }}
-							</p>
-						</div>
-						<span class="" id="time-posted">{{ message.time }}</span>
+			<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
+			<div class="container" id="message-container" v-for="message in messages" :key="message">
+				<div :class="[message.author == authUser.email ? 'sent-msg shadow-sm border' : 'received-msg shadow-sm border']">
+					<span class="" id="date-posted">{{ message.date }}</span>
+					<span class="position-absolute p-3" id="username-div">{{ message.username }}</span>
+					<div class=" mt-4 text-left" id="bubble">
+						<p class="text-start p-3" id="message-text">
+							{{ message.message }}
+						</p>
 					</div>
+					<span class="" id="time-posted">{{ message.time }}</span>
 				</div>
-				<input
-					@keyup.enter="saveMessage"
-					v-model="message"
-					type="text"
-					class="form-control rounded-pill shadow-sm border mb-5"
-					id="write-message"
-					placeholder="Write something..."
-				/>
 			</div>
+			<input
+				@keyup.enter="saveMessage"
+				v-model="message"
+				type="text"
+				class="form-control rounded-pill shadow-sm border mb-5"
+				id="write-message"
+				placeholder="Write something..."
+			/>
 		</div>
 	</div>
 
-	<div class="bottom-div"></div>
+	<footer class="container-fluid fixed-bottom" id="footer">
+		<div class="row p-2" id="user-footer">
+			<li>
+				<div class="dropup">
+					<a class="dropbtn"><fa :icon="['fas', 'user-circle']" /> {{ authUser.email }} </a>
+					<div class="dropup-content">
+						<a href="#" id="delete-button" @click="deleteUser"> <fa :icon="['fas', 'times-circle']" /> Delete User </a>
+						<hr />
+						<a href="#" id="log-out-button" @click="logOut">Log Out</a>
+					</div>
+				</div>
+			</li>
+		</div>
+	</footer>
 </template>
 
 <script>
@@ -92,22 +68,7 @@
 				user
 					.delete()
 					.then(() => {
-						swal({
-							title: 'Delete user?',
-							text: 'Are you sure you want to delete? ' + userdeleted + '?',
-							icon: 'warning',
-							buttons: true,
-							dangerMode: true,
-						}).then((willDelete) => {
-							if (willDelete) {
-								swal('Deleted!', userdeleted + 'has been successfully deleted.', 'success', {
-									icon: 'success',
-								});
-							} else {
-								swal('Oops!', 'Something went wrong!', 'error');
-							}
-						});
-						//swal('User deleted', 'User has now been deleted from database', 'success');
+						window.location.href = "/deleted";
 					})
 					.catch((error) => {
 						var deleteDiv = document.getElementById('delete-hint');
@@ -127,8 +88,8 @@
 					.auth()
 					.signOut()
 					.then(() => {
-
 						// Sign-out successful.
+						loginChange.innerText = 'Login';
 					})
 					.catch((error) => {
 						// An error happened.
@@ -194,7 +155,8 @@
 			firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
 					this.authUser = user;
-
+					var loginChange = document.getElementById('login-link');
+					loginChange.innerText = 'Log out';
 				} else {
 					this.authUser = {};
 				}
@@ -223,7 +185,7 @@
 		float: left;
 		margin-bottom: 30px;
 		border-radius: 2rem;
-		max-width: 50vh;
+		max-width: 60vh;
 		min-width: 30vh;
 		margin-top: 3vh;
 	}
@@ -252,7 +214,7 @@
 		float: right;
 		margin-bottom: 30px;
 		border-radius: 2rem;
-		max-width: 50vh;
+		max-width: 60vh;
 		min-width: 30vh;
 		margin-top: 3vh;
 	}
@@ -291,6 +253,10 @@
 		width: 100%;
 	}
 
+	#chat-container {
+		width: 100vh;
+	}
+
 	button:hover {
 		border: 0px;
 		background-color: #fe4c6f;
@@ -302,7 +268,80 @@
 		width: 100%;
 	}
 
-	#user-panel {
+	#footer {
+		color: white;
+		text-align: center;
+	}
+
+	#user-footer {
+		background: rgb(31, 31, 31);
+		float: left;
+	}
+
+	li {
+		list-style: none;
+	}
+
+	a {
+		color: #ffffff;
+		text-decoration: none;
+		margin: 10px;
+	}
+
+	a:hover {
+		color: #fe4c6f;
+	}
+
+	/* Dropup Button */
+	.dropbtn {
+		color: white;
+		padding: 16px;
+		font-size: 16px;
+		border: none;
+		background: none;
+	}
+
+	/* The container <div> - needed to position the dropup content */
+	.dropup {
+		position: relative;
+		display: inline-block;
+		padding: 1vh;
+	}
+
+	/* Dropup content (Hidden by Default) */
+	.dropup-content {
+		display: none;
+		position: absolute;
+		bottom: 5vh;
+		background-color: rgb(31, 31, 31);
+		min-width: 250px;
+		text-align: left;
+		font-size: 0.9rem;
+		z-index: 1;
+	}
+
+	/* Links inside the dropup */
+	.dropup-content a {
+		color: rgb(255, 255, 255);
+		padding: 5px 5px;
+		text-decoration: none;
+		display: block;
+		background: none;
+	}
+
+	/* Change color of dropup links on hover */
+	.dropup-content a:hover {
+		color: #fe4c6f;
+	}
+
+	/* Show the dropup menu on hover */
+	.dropup:hover .dropup-content {
+		display: block;
+	}
+
+	/* Change the background color of the dropup button when the dropup content is shown */
+	.dropup:hover .dropbtn {
+		cursor: pointer;
 	}
 
 	/* style determined based on device */
