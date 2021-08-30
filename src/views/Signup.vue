@@ -23,7 +23,7 @@
 		</div>
 
 		<div class="form-group mt-4">
-			<label id="label">Password</label>
+			<label id="label">Choose password</label>
 
 			<input
 				type="password"
@@ -38,7 +38,10 @@
 			/>
 		</div>
 		<div class="d-grid gap-2 text-center">
-			<button type="submit" class="btn mt-5 mb-5 p-3 rounded-pill" id="register-button" @click="signUp"><fa :icon="['fas', 'edit']" /> Register</button>
+					<div class="password-hint-error mt-2" style="font-size: 0.8rem" id="password-hint">
+			Password must contain at least 6 characters
+		</div>
+			<button type="submit" class="btn mt-4 mb-5 p-3 rounded-pill" id="register-button" @click="signUp"><fa :icon="['fas', 'edit']" /> Register</button>
 		</div>
 	</div>
 </template>

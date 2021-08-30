@@ -4,7 +4,7 @@
 			<nav class="navbar navbar-dark bg-dark navbar-fixed-top">
 				<div class="container">
 					<div class="navbar-header">
-						<a class="navbar-brand" href="/">C I A O B E N E</a>
+						<a class="navbar-brand" href="#">C I A O B E N E</a>
 					</div>
 					<div id="navbar">
 						<ul class="nav navbar-nav navbar-right">
@@ -53,9 +53,7 @@
 				firebase
 					.auth()
 					.signOut()
-					.then(() => {
-
-					})
+					.then(() => {})
 					.catch((error) => {
 						// An error happened.
 					});
@@ -96,7 +94,6 @@
 			firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
 					this.authUser = user;
-
 				} else {
 					this.authUser = {};
 				}
@@ -125,12 +122,13 @@
 		text-align: center;
 		background-color: rgb(236, 236, 236);
 		margin-top: 20vh;
-				scroll-behavior: smooth;
+		scroll-behavior: smooth;
 	}
 
 	html {
 		background: rgb(236, 236, 236);
 		scroll-behavior: smooth;
+		margin-bottom: 10vh;
 	}
 
 	nav {

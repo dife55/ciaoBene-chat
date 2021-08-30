@@ -1,6 +1,7 @@
 <template>
 	<div class="container mt-5" id="container-login">
 		<h3 class="mb-5" id="headline">Log in to continue.</h3>
+					<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
 		<hr />
 
 		<div class="form-group">
@@ -31,12 +32,10 @@
 			/>
 		</div>
 
-		<div class="password-hint-error mt-2" style="font-size: 0.8rem" id="password-hint">
-			Password must contain at least 6 characters
-		</div>
+
 
 		<div class="d-grid gap-2 text-center"></div>
-		<button type="submit" class="btn mt-3 mb-3 p-3 rounded-pill" id="register-button" @click="signIn" @enter="signIn">
+		<button type="submit" class="btn mt-5 mb-3 p-3 rounded-pill" id="register-button" @click="signIn" @enter="signIn">
 			<fa :icon="['fas', 'user-circle']" /> Login
 		</button>
 		<hr />
@@ -127,6 +126,7 @@
 						// ...
 					});
 			},
+			
 		},
 		created() {},
 	};

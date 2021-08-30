@@ -3,6 +3,7 @@ import Chat from '../views/Chat.vue'
 import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
 import Success from '../views/Success.vue'
+import Deleted from '../views/Deleted.vue'
 
 
 const routes = [
@@ -20,6 +21,11 @@ const routes = [
     path: '/success',
     name: 'Success',
     component: Success
+  },
+  {
+    path: '/deleted',
+    name: 'Deleted',
+    component: Deleted
   },
   {
     path: '/login',
