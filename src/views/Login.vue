@@ -68,6 +68,8 @@
 			};
 		},
 		methods: {
+
+			// When signing in with email and password.
 			signIn() {
 				firebase
 					.auth()
@@ -75,16 +77,10 @@
 					.then((user) => {
 						this.$router.replace('/');
 
-						let loggedUser = this.formData.email.split('@')[0];
-						console.log(loggedUser + ' successfully logged in!');
 					})
 					.catch((error) => {
-						//let emailValid = document.querySelector('#input-email')
-						//let passwordValid = document.querySelector('#input-password')
-
-						//emailValid.reportValidity();
-						//passwordValid.reportValidity();
-
+						
+						// Logic for showing the validation errors.
 						var pwDiv = document.getElementById('password-hint');
 
 						if (error.message) {
@@ -96,6 +92,7 @@
 					});
 			},
 
+			// Login with Google.
 			login() {
 				var provider = new firebase.auth.GoogleAuthProvider();
 				provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
