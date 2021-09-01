@@ -48,7 +48,6 @@
 
 <script>
 	import firebase from 'firebase';
-	import swal from 'sweetalert';
 
 	export default {
 		name: 'Signup',
@@ -63,22 +62,20 @@
 		},
 
 		methods: {
+
+			// Firebase sign up method with email and password.
 			signUp() {
 				firebase
 					.auth()
 					.createUserWithEmailAndPassword(this.formData.email, this.formData.password)
 					.then((user) => {
-						//swal("User registered!", "Congratulations, your user has been registered!", "success")
+					
 
 						this.$router.replace('/success');
 					})
 					.catch((error) => {
-						//let emailValid = document.querySelector('#input-email');
-						//let passwordValid = document.querySelector('#input-password');
 
-						//emailValid.reportValidity();
-						//passwordValid.reportValidity();
-
+						// Logic for showing the validation errors.
 						var pwDiv = document.getElementById('password-hint');
 
 						if (error.message) {
@@ -87,11 +84,11 @@
 						} else {
 							pwDiv.style.display = 'none';
 						}
-						// ..
 					});
 
 			},
 
+			// Login with Google.
 			login() {
 				var provider = new firebase.auth.GoogleAuthProvider();
 				provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
