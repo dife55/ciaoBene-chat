@@ -1,8 +1,8 @@
 <template>
 	<div class="container" id="container-success">
-		<h1 id="success-icon"><fa :icon="['fas', 'exclamation-triangle']" /></h1>
+		<h1 id="success-icon"><fa :icon="['fas', 'times-circle']" /></h1>
 		<h3 class="mb-3" id="headline-success">Your account has been deleted.</h3>
-		<h5 class="mb-5" id="headline">We are sorry to hear that you deleted your account. We hope that you return soon.</h5>
+		<h5 class="mb-5" id="headline">We hope that you return soon.</h5>
 		<a href="/login"><button href="/sign-up" class="btn mb-3 p-3 rounded-pill" id="go-to-login-button">Register a new account</button></a>
 	</div>
 </template>
@@ -50,11 +50,11 @@
 
 	#headline-success {
 		font-weight: bold;
-		color: #c92f2f
+		color: #b60000
 	}
 
 	#success-icon {
-		color: #b55858;
+		color: #b60000;
 		font-size: 4rem;
 	}
 
