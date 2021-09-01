@@ -1,7 +1,11 @@
 <template>
 	<div class="container mt-5" id="chat-container">
 		<div class="row">
+			<h3 class="mb-2" id="headline">Lobby</h3>
+			<hr />
 			<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
+
+			<!-- Chat boxes -->
 			<div class="container" id="message-container" v-for="message in messages" :key="message">
 				<div :class="[message.author == authUser.email ? 'sent-msg shadow-sm border' : 'received-msg shadow-sm border']">
 					<span class="" id="date-posted">{{ message.date }}</span>
@@ -14,6 +18,8 @@
 					<span class="" id="time-posted">{{ message.time }}</span>
 				</div>
 			</div>
+
+			<!-- Write message -->
 			<input
 				@keyup.enter="saveMessage"
 				v-model="message"
@@ -25,18 +31,38 @@
 		</div>
 	</div>
 
-	<footer class="container-fluid fixed-bottom" id="footer">
-		<div class="row p-2" id="user-footer">
-			<li>
-				<div class="dropup">
-					<a class="dropbtn"><fa :icon="['fas', 'user-circle']" /> {{ authUser.email }} </a>
-					<div class="dropup-content">
-						<a href="#" id="delete-button" @click="deleteUser"> <fa :icon="['fas', 'times-circle']" /> Delete User </a>
-						<hr />
-						<a href="#" id="log-out-button" @click="logOut">Log Out</a>
+	<!-- User panel -->
+	<footer class="container fixed-bottom" id="footer">
+		<div class="row p-2  m-2 rounded" id="user-footer">
+			<div class="col-4" id="channels-col">
+				<li>
+					<div class="dropup">
+						<a class="dropbtn-channels" id="channel-button-channels">Channels</a>
+						<div class="dropup-content">
+							<a class="dropbtn-channels" id="channel-button-football" @click="changeChannel(this.football)">Football</a>
+							<hr />
+							<a class="dropbtn-channels" id="channel-button-basketball" @click="changeChannel(this.basketball)">Basketball</a>
+							<hr />
+							<a class="dropbtn-channels" id="channel-button-sports" @click="changeChannel(this.sports)">Sports</a>
+							<hr />
+							<a class="dropbtn-channels" id="channel-button-lobby" @click="changeChannel(this.lobby)">Lobby</a>
+						</div>
 					</div>
-				</div>
-			</li>
+				</li>
+			</div>
+			<div class="col-2"></div>
+			<div class="col-6" id="user-col">
+				<li>
+					<div class="dropup">
+						<a class="dropbtn"><fa :icon="['fas', 'user-circle']" /> {{ authUser.email }} </a>
+						<div class="dropup-content">
+							<a href="#" id="delete-button" @click="deleteUser"> <fa :icon="['fas', 'times-circle']" /> Delete User </a>
+							<hr />
+							<a href="#" id="log-out-button" @click="logOut">Log Out</a>
+						</div>
+					</div>
+				</li>
+			</div>
 		</div>
 	</footer>
 </template>
@@ -52,15 +78,19 @@
 				message: null,
 				messages: [],
 				authUser: {},
+				currentChannel: 'Lobby',
+				channel: null,
 			};
 		},
 
 		methods: {
+			// Scroll down on page.
 			goDown() {
 				var box = document.getElementById('write-message');
 				box.scrollIntoView();
 			},
 
+			// Delete user from firebase.
 			deleteUser() {
 				const user = firebase.auth().currentUser;
 				let userdeleted = firebase.auth().currentUser.email;
@@ -68,21 +98,22 @@
 				user
 					.delete()
 					.then(() => {
-						window.location.href = "/deleted";
+						window.location.href = '/deleted';
 					})
 					.catch((error) => {
 						var deleteDiv = document.getElementById('delete-hint');
 
+						// Logic for the error messages
 						if (error.message) {
 							deleteDiv.style.display = 'block';
 							deleteDiv.innerText = error.message;
 						} else {
 							deleteDiv.style.display = 'none';
 						}
-						console.log(error);
 					});
 			},
 
+			// Log out authenticated user.
 			logOut() {
 				firebase
 					.auth()
@@ -90,40 +121,54 @@
 					.then(() => {
 						// Sign-out successful.
 						loginChange.innerText = 'Login';
+						location.reload();
 					})
 					.catch((error) => {
-						// An error happened.
+						var deleteDiv = document.getElementById('delete-hint');
+
+						// Logic for the error messages
+						if (error.message) {
+							deleteDiv.style.display = 'block';
+							deleteDiv.innerText = error.message;
+						} else {
+							deleteDiv.style.display = 'none';
+						}
 					});
 			},
 
+			// Write message & save to firestore.
 			saveMessage() {
+				// Splitting datetime to date & time. Setting wanted date format.
 				let dateNow = new Intl.DateTimeFormat('se-SE', { dateStyle: 'full' }).format(new Date());
 				let timeNow = new Intl.DateTimeFormat('se-SE', { timeStyle: 'short' }).format(new Date());
 
+				// Logic: if the user is logged in with google use display name else use email as username.
 				if (this.authUser.displayName) {
-					db.collection('chat')
+					db.collection(this.currentChannel)
 						.add({
-							message: this.message,
-							author: this.authUser.email,
-							postedAt: new Date(),
-							date: dateNow,
-							time: timeNow,
-							username: this.authUser.displayName,
+							message: this.message, // The actual message
+							author: this.authUser.email, // Logged in users email.
+							postedAt: new Date(), // Full Datetime.
+							date: dateNow, // Date.
+							time: timeNow, // Time.
+							username: this.authUser.displayName, // Google display name as username
 						})
 						.then(() => {
+							// After saving message, scroll down on page.
 							this.goDown();
 						});
 
 					this.message = null;
 				} else {
-					db.collection('chat')
+					db.collection(this.currentChannel)
 						.add({
 							message: this.message,
 							author: this.authUser.email,
 							postedAt: new Date(),
 							date: dateNow,
 							time: timeNow,
-							username: this.authUser.email.split('@')[0],
+							username: this.authUser.email.split('@')[0], // Splitting the email after @ as username,
+							//  to look better when fetching messages.
 						})
 						.then(() => {
 							this.goDown();
@@ -133,8 +178,24 @@
 				}
 			},
 
+			// Change channel: changing current channel and fetching messages for that channel.
+			changeChannel(channel) {
+				var changeChannel = document.getElementById('channel-button-channels');
+				changeChannel.innerText = channel;
+
+				var changeHeadline = document.getElementById('headline');
+				this.currentChannel = channel;
+
+				changeHeadline.innerText = this.currentChannel;
+
+				console.log(this.currentChannel);
+
+				this.fetchMessages();
+			},
+
+			// Get all messages
 			fetchMessages() {
-				db.collection('chat')
+				db.collection(this.currentChannel)
 					.orderBy('postedAt')
 					.onSnapshot((querySnapshot) => {
 						let allMessages = [];
@@ -145,8 +206,9 @@
 						this.messages = allMessages;
 
 						setTimeout(() => {
+							// After fetching messages, scroll down on page.
 							this.goDown();
-						}, 1000);
+						}, 200);
 					});
 			},
 		},
@@ -155,8 +217,10 @@
 			firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
 					this.authUser = user;
-					var loginChange = document.getElementById('login-link');
-					loginChange.innerText = 'Log out';
+					this.football = document.getElementById('channel-button-football').innerText;
+					this.basketball = document.getElementById('channel-button-basketball').innerText;
+					this.sports = document.getElementById('channel-button-sports').innerText;
+					this.lobby = document.getElementById('channel-button-lobby').innerText;
 				} else {
 					this.authUser = {};
 				}
@@ -186,7 +250,7 @@
 		margin-bottom: 30px;
 		border-radius: 2rem;
 		max-width: 60vh;
-		min-width: 30vh;
+		min-width: 40vh;
 		margin-top: 3vh;
 	}
 
@@ -215,7 +279,7 @@
 		margin-bottom: 30px;
 		border-radius: 2rem;
 		max-width: 60vh;
-		min-width: 30vh;
+		min-width: 40vh;
 		margin-top: 3vh;
 	}
 
@@ -240,7 +304,7 @@
 	}
 
 	#message-container {
-		text-align: left;
+		text-align: center;
 		display: inline-block;
 	}
 
@@ -254,7 +318,7 @@
 	}
 
 	#chat-container {
-		width: 100vh;
+		width: 80vh;
 	}
 
 	button:hover {
@@ -275,7 +339,6 @@
 
 	#user-footer {
 		background: rgb(31, 31, 31);
-		float: left;
 	}
 
 	li {
@@ -292,8 +355,20 @@
 		color: #fe4c6f;
 	}
 
+	.dropbtn-channels {
+		cursor: pointer;
+	}
+
 	/* Dropup Button */
 	.dropbtn {
+		color: white;
+		padding: 16px;
+		font-size: 1rem;
+		border: none;
+		background: none;
+	}
+
+	.dropbtn-channels {
 		color: white;
 		padding: 16px;
 		font-size: 16px;
@@ -309,13 +384,14 @@
 	}
 
 	/* Dropup content (Hidden by Default) */
-	.dropup-content {
+	.dropup-content,
+	.dropup-content-channels {
 		display: none;
 		position: absolute;
 		bottom: 5vh;
 		background-color: rgb(31, 31, 31);
-		min-width: 250px;
-		text-align: left;
+		width: 100%;
+		text-align: center;
 		font-size: 0.9rem;
 		z-index: 1;
 	}
@@ -363,6 +439,19 @@
 		}
 
 		#chat-container {
+			width: 100%;
+		}
+
+		.dropbtn {
+			font-size: 0.9rem;
+		}
+
+		.dropbtn-channels {
+			font-size: 0.9rem;
+		}
+
+		#channels-col,
+		#user-col {
 			width: 100%;
 		}
 	}
