@@ -4,12 +4,11 @@
 			<nav class="navbar navbar-dark bg-dark navbar-fixed-top">
 				<div class="container">
 					<div class="navbar-header">
-						<a class="navbar-brand" href="#">C I A O B E N E</a>
+						<a class="navbar-brand" href="/">C I A O B E N E</a>
 					</div>
 					<div id="navbar">
 						<ul class="nav navbar-nav navbar-right">
 							<li>
-								<a id="about-link" href="/about">About</a>
 								<a id="sign-up-link" href="/sign-up"> Signup</a>
 								<a id="login-link" href="/login"> Login</a>
 							</li>
@@ -36,81 +35,12 @@
 		},
 
 		methods: {
-			signIn() {
-				firebase
-					.auth()
-					.signInWithEmailAndPassword(this.formData.email, this.formData.password)
-					.then((user) => {
-						this.$router.replace('/');
-						console.log('successfully logged in!');
-					})
-					.catch((e) => {
-						console.log(e.message);
-					});
-			},
-
-			logOut() {
-				firebase
-					.auth()
-					.signOut()
-					.then(() => {})
-					.catch((error) => {
-						// An error happened.
-					});
-			},
-
-			login() {
-				var provider = new firebase.auth.GoogleAuthProvider();
-				provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-
-				firebase
-					.auth()
-					.signInWithPopup(provider)
-					.then((result) => {
-						/** @type {firebase.auth.OAuthCredential} */
-						var credential = result.credential;
-
-						// This gives you a Google Access Token. You can use it to access the Google API.
-						var token = credential.accessToken;
-						// The signed-in user info.
-						var user = result.user;
-
-						this.$router.push('/');
-						// ...
-					})
-					.catch((error) => {
-						// Handle Errors here.
-						var errorCode = error.code;
-						var errorMessage = error.message;
-						// The email of the user's account used.
-						var email = error.email;
-						// The firebase.auth.AuthCredential type that was used.
-						var credential = error.credential;
-						// ...
-					});
-			},
+			
 		},
 		created() {
-			firebase.auth().onAuthStateChanged((user) => {
-				if (user) {
-					this.authUser = user;
-				} else {
-					this.authUser = {};
-				}
-			});
+
 		},
 
-		beforeRouteEnter(to, from, next) {
-			next((vm) => {
-				firebase.auth().onAuthStateChanged((user) => {
-					if (user) {
-						next();
-					} else {
-						vm.$router.push('/login');
-					}
-				});
-			});
-		},
 	};
 </script>
 
