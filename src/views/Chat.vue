@@ -1,8 +1,6 @@
 <template>
 	<div class="container mt-5" id="chat-container">
 		<div class="row">
-			<h3 class="mb-2" id="headline">Lobby</h3>
-			<hr />
 			<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
 
 			<!-- Chat boxes -->
@@ -32,8 +30,8 @@
 	</div>
 
 	<!-- User panel -->
-	<footer class="container fixed-bottom" id="footer">
-		<div class="row p-2  m-2 rounded" id="user-footer">
+	<footer class="container-fluid fixed-bottom" id="footer">
+		<div class="row p-2" id="user-footer">
 			<div class="col-4" id="channels-col">
 				<li>
 					<div class="dropup">
@@ -86,8 +84,10 @@
 		methods: {
 			// Scroll down on page.
 			goDown() {
+
 				var box = document.getElementById('write-message');
 				box.scrollIntoView();
+				
 			},
 
 			// Delete user from firebase.
@@ -167,7 +167,7 @@
 							postedAt: new Date(),
 							date: dateNow,
 							time: timeNow,
-							username: this.authUser.email.split('@')[0], // Splitting the email after @ as username,
+							username: this.authUser.email, // Splitting the email after @ as username,
 							//  to look better when fetching messages.
 						})
 						.then(() => {
@@ -181,12 +181,13 @@
 			// Change channel: changing current channel and fetching messages for that channel.
 			changeChannel(channel) {
 				var changeChannel = document.getElementById('channel-button-channels');
+
 				changeChannel.innerText = channel;
 
-				var changeHeadline = document.getElementById('headline');
 				this.currentChannel = channel;
 
-				changeHeadline.innerText = this.currentChannel;
+				//var changeHeadline = document.getElementById('headline');
+				// changeHeadline.innerText = this.currentChannel;
 
 				console.log(this.currentChannel);
 
@@ -195,6 +196,7 @@
 
 			// Get all messages
 			fetchMessages() {
+				setTimeout(() => {
 				db.collection(this.currentChannel)
 					.orderBy('postedAt')
 					.onSnapshot((querySnapshot) => {
@@ -210,6 +212,7 @@
 							this.goDown();
 						}, 200);
 					});
+					}, 800);
 			},
 		},
 
@@ -390,7 +393,7 @@
 		position: absolute;
 		bottom: 5vh;
 		background-color: rgb(31, 31, 31);
-		width: 100%;
+		width: 30vh;
 		text-align: center;
 		font-size: 0.9rem;
 		z-index: 1;
