@@ -8,19 +8,14 @@
 </template>
 
 <script>
-	import firebase from 'firebase';
 
 	export default {
 		name: 'SignIn',
 
 		data() {
-			return {
-			
-			};
+			return {};
 		},
-		methods: {
-
-		},
+		methods: {},
 		created() {},
 	};
 </script>
@@ -46,7 +41,6 @@
 		box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 		color: #fff;
 	}
-
 
 	#headline-success {
 		font-weight: bold;
