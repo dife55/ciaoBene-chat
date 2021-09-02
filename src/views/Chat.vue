@@ -1,7 +1,11 @@
 <template>
-	<div class="container mt-5" id="chat-container">
+	<div class="container mt-5 mb-5" id="chat-container">
+				<h3 class="" id="headline">Lobby</h3>
+				<hr/>
 		<div class="row">
 			<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
+
+
 
 			<!-- Chat boxes -->
 			<div class="container" id="message-container" v-for="message in messages" :key="message">
@@ -26,6 +30,7 @@
 				id="write-message"
 				placeholder="Write something..."
 			/>
+			
 		</div>
 	</div>
 
@@ -84,10 +89,8 @@
 		methods: {
 			// Scroll down on page.
 			goDown() {
-
 				var box = document.getElementById('write-message');
 				box.scrollIntoView();
-				
 			},
 
 			// Delete user from firebase.
@@ -186,8 +189,8 @@
 
 				this.currentChannel = channel;
 
-				//var changeHeadline = document.getElementById('headline');
-				// changeHeadline.innerText = this.currentChannel;
+				var changeHeadline = document.getElementById('headline');
+				changeHeadline.innerText = this.currentChannel;
 
 				console.log(this.currentChannel);
 
@@ -196,7 +199,6 @@
 
 			// Get all messages
 			fetchMessages() {
-				
 				db.collection(this.currentChannel)
 					.orderBy('postedAt')
 					.onSnapshot((querySnapshot) => {
@@ -211,7 +213,7 @@
 							// After fetching messages, scroll down on page.
 							this.goDown();
 						}, 200);
-					});	
+					});
 			},
 		},
 
@@ -323,6 +325,7 @@
 
 	#chat-container {
 		width: 80vh;
+		margin-top: 30%;
 	}
 
 	button:hover {
@@ -340,6 +343,13 @@
 		color: white;
 		text-align: center;
 	}
+
+	#headline {
+		font-weight: bold;
+		margin-bottom: 20px;
+	}
+
+
 
 	#user-footer {
 		background: rgb(31, 31, 31);
@@ -428,6 +438,12 @@
 	@media (max-width: 550px) {
 		.sent-msg {
 			width: 100%;
+		}
+
+		#headline {
+			text-align: center;
+			font-weight: bold;
+			margin-top: 50%;
 		}
 
 		.received-msg {
