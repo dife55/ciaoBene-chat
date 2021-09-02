@@ -123,8 +123,6 @@
 					.signOut()
 					.then(() => {
 						// Sign-out successful.
-						loginChange.innerText = 'Login';
-						location.reload();
 					})
 					.catch((error) => {
 						var deleteDiv = document.getElementById('delete-hint');
@@ -217,6 +215,7 @@
 			},
 		},
 
+		// when enetered route
 		created() {
 			firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
@@ -228,13 +227,13 @@
 					this.lobby = document.getElementById('channel-button-lobby').innerText;
 				} else {
 					this.authUser = {};
-					logout.style.display = 'block';
 				}
 			});
 
 			this.fetchMessages();
 		},
 
+		// if you are not autenticated you cant enter the route.
 		beforeRouteEnter(to, from, next) {
 			next((vm) => {
 				firebase.auth().onAuthStateChanged((user) => {
