@@ -196,7 +196,7 @@
 
 			// Get all messages
 			fetchMessages() {
-				setTimeout(() => {
+				
 				db.collection(this.currentChannel)
 					.orderBy('postedAt')
 					.onSnapshot((querySnapshot) => {
@@ -211,8 +211,7 @@
 							// After fetching messages, scroll down on page.
 							this.goDown();
 						}, 200);
-					});
-					}, 800);
+					});	
 			},
 		},
 
@@ -220,12 +219,14 @@
 			firebase.auth().onAuthStateChanged((user) => {
 				if (user) {
 					this.authUser = user;
+
 					this.football = document.getElementById('channel-button-football').innerText;
 					this.basketball = document.getElementById('channel-button-basketball').innerText;
 					this.sports = document.getElementById('channel-button-sports').innerText;
 					this.lobby = document.getElementById('channel-button-lobby').innerText;
 				} else {
 					this.authUser = {};
+					logout.style.display = 'block';
 				}
 			});
 

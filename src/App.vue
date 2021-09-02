@@ -9,6 +9,7 @@
 					<div id="navbar">
 						<ul class="nav navbar-nav navbar-right">
 							<li>
+								<a id="sign-up-link" href="/about"> About</a>
 								<a id="sign-up-link" href="/sign-up"> Signup</a>
 								<a id="login-link" href="/login"> Login</a>
 							</li>
@@ -22,8 +23,6 @@
 </template>
 
 <script>
-
-
 	import firebase from 'firebase';
 	export default {
 		name: 'SignIn',
@@ -37,17 +36,16 @@
 		},
 
 		methods: {
-			
+
 		},
 		created() {
 
 		},
-
 	};
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap');
+	@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap');
 
 	#app {
 		font-family: 'Montserrat', Helvetica, Arial, sans-serif;

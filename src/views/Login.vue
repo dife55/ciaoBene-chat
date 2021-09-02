@@ -1,11 +1,11 @@
 <template>
 	<div class="container mt-5" id="container-login">
 		<h3 class="mb-5" id="headline">Log in to continue.</h3>
-					<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
+		<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="delete-hint"></div>
 		<hr />
 
 		<div class="form-group">
-      			<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="password-hint"></div>
+			<div class="alert alert-danger" style="font-size: 0.8rem; display:none;" id="password-hint"></div>
 			<label>Email address</label>
 			<input
 				type="email"
@@ -31,8 +31,6 @@
 				required
 			/>
 		</div>
-
-
 
 		<div class="d-grid gap-2 text-center"></div>
 		<button type="submit" class="btn mt-5 mb-3 p-3 rounded-pill" id="register-button" @click="signIn" @enter="signIn">
@@ -60,7 +58,7 @@
 		name: 'Signup',
 
 		data() {
-			return { 
+			return {
 				formData: {
 					email: '',
 					password: '',
@@ -68,7 +66,6 @@
 			};
 		},
 		methods: {
-
 			// When signing in with email and password.
 			signIn() {
 				firebase
@@ -76,10 +73,8 @@
 					.signInWithEmailAndPassword(this.formData.email, this.formData.password)
 					.then((user) => {
 						this.$router.replace('/');
-
 					})
 					.catch((error) => {
-						
 						// Logic for showing the validation errors.
 						var pwDiv = document.getElementById('password-hint');
 
@@ -123,9 +118,21 @@
 						// ...
 					});
 			},
-			
 		},
 		created() {},
+
+		beforeRouteEnter(to, from, next) {
+			next((vm) => {
+				firebase.auth().onAuthStateChanged((user) => {
+					if (user) {
+						next();
+						
+					} else {
+						vm.$router.push('/login');
+					}
+				});
+			});
+		},
 	};
 </script>
 
