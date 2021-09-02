@@ -2,6 +2,11 @@
 Is a chat app, that lets you create new users or login with existing users to chat in different chat-channels. It also lets you log out and delete current authenticated user. 
 
 Vue.js is used as frontend while the backend is handeled by Firebase authentication and Firestore to store chat messages.   
+## Install Node JS
+To be able to run npm install you need to download and install Nodejs:
+```
+https://nodejs.org/en/download/
+```
 
 ## Project setup
 ```
